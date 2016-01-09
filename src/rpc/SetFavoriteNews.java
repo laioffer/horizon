@@ -19,7 +19,7 @@ import db.DBConnection;
 /**
  * Servlet implementation class SetFavoriteNews
  */
-@WebServlet("/favor")
+@WebServlet("/favorite")
 public class SetFavoriteNews extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

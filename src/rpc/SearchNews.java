@@ -22,7 +22,7 @@ import db.DBConnection;
 /**
  * Servlet implementation class SearchNews
  */
-@WebServlet("/search")
+@WebServlet("/news")
 public class SearchNews extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

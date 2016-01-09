@@ -24,7 +24,7 @@ import db.DBConnection;
 /**
  * Servlet implementation class RecommendNews
  */
-@WebServlet("/recommend")
+@WebServlet("/recommendation")
 public class RecommendNews extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final int MAX_RECOMMENDED_NEWS = 20;
