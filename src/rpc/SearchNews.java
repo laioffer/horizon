@@ -63,6 +63,7 @@ public class SearchNews extends HttpServlet {
 				
 				RpcParser.writeOutput(response, new JSONArray(allNews));
 			} else {
+				RpcParser.writeOutput(response, new JSONObject().put("status", "InvalidParameter"));
 				System.err
 						.println("SearchNews gets an invalid POST request that "
 								+ "does not contain keyword or user_id. Return null.");

@@ -32,6 +32,9 @@ public class SetFavoriteNews extends HttpServlet {
         super();
     }
 
+    /**
+     * Handles the GET request to fetch a list of news that the user favors. 
+     */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			JSONArray array = new JSONArray();
@@ -50,6 +53,9 @@ public class SetFavoriteNews extends HttpServlet {
 		}
 	}
 
+	/**
+	 * Handles the POST request to add favorite news. 
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			JSONObject input = RpcParser.parseInput(request);
@@ -71,6 +77,9 @@ public class SetFavoriteNews extends HttpServlet {
 		}
 	}
 
+	/**
+	 * Handles the DELETE request to remove favorite news. 
+	 */
 	public void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {

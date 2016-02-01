@@ -44,7 +44,6 @@ public class RecommendNews extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		try {
 			DBConnection connection = new DBConnection();
-			//Why use HashSet but List?
 			HashSet<News> allNews = new HashSet<>();
 
 			if (request.getParameterMap().containsKey("user_id")) {
