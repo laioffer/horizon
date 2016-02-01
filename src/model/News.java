@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class News {
@@ -17,6 +18,16 @@ public class News {
 
 	private static final String NYTIMES_URL = "http://www.nytimes.com/";
 
+	public News(String id, String title, String url, String snippet,
+			String imageUrl, List<String> keywords) {
+		this.id = id;
+		this.title = title;
+		this.url = url;
+		this.snippet = snippet;
+		this.imageUrl = imageUrl;
+		this.keywords = keywords;
+	}
+
 	/**
 	 * Construct a News object from a JSONObject
 	 */
@@ -25,7 +36,11 @@ public class News {
 			this.id = jsonObject.getString("_id");
 			this.title = jsonObject.getJSONObject("headline").getString("main");
 			this.url = jsonObject.getString("web_url");
-			this.snippet = jsonObject.getString("snippet");
+			if (jsonObject.has("snippet") && jsonObject.get("snippet") instanceof String) {
+				this.snippet = jsonObject.getString("snippet");
+			} else {
+				this.snippet = "";
+			}
 			JSONArray multimedia = jsonObject.getJSONArray("multimedia");
 			if (multimedia.length() > 0) {
 				this.imageUrl = NYTIMES_URL
@@ -41,6 +56,21 @@ public class News {
 					.println("Exception in converting a JSON object to a News object");
 			e.printStackTrace();
 		}
+	}
+	
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("news_id", id);
+			obj.put("title", title);
+			obj.put("url", url);
+			obj.put("snippet", snippet);
+			obj.put("image_url", imageUrl);
+			obj.put("keywords", Keyword.convertKeywordsToString(keywords));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return obj;
 	}
 
 	public String getId() {

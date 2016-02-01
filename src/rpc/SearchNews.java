@@ -39,22 +39,12 @@ public class SearchNews extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
 		try {
-
-			// Parse input parameters from client.
-			JSONObject input = RpcParser.parseInput(request);
-
-			if (input.has("user_id") && input.has("keyword")) {
-				String keyword = input.getString("keyword");
-				String userId = input.getString("user_id");
+			
+			if (request.getParameterMap().containsKey("user_id")
+					&& request.getParameterMap().containsKey("keyword")) {
+				String keyword = request.getParameter("keyword");
+				String userId = request.getParameter("user_id");
 				System.out
 						.println("SearchNews gets a POST request with keyword = "
 								+ keyword + ", userId = " + userId);
@@ -71,7 +61,7 @@ public class SearchNews extends HttpServlet {
 					allNews.add(news);
 				}
 				
-				RpcParser.parseOutput(response, new JSONArray(allNews));
+				RpcParser.writeOutput(response, new JSONArray(allNews));
 			} else {
 				System.err
 						.println("SearchNews gets an invalid POST request that "
@@ -83,4 +73,12 @@ public class SearchNews extends HttpServlet {
 		}
 	}
 
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		
+	}
 }

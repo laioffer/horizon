@@ -42,22 +42,13 @@ public class RecommendNews extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
 		try {
-			JSONObject input = RpcParser.parseInput(request);
 			DBConnection connection = new DBConnection();
 			//Why use HashSet but List?
 			HashSet<News> allNews = new HashSet<>();
 
-			if (input.has("user_id")) {
-				String userId = input.getString("user_id");
+			if (request.getParameterMap().containsKey("user_id")) {
+				String userId = request.getParameter("user_id");
 				Set<String> favoriteNewsId = connection.getFavoriteNewsId(userId);
 				List<Keyword> keywords = connection.getFavoriteKeywords(userId);
 
@@ -68,7 +59,7 @@ public class RecommendNews extends HttpServlet {
 					JSONArray jsonArray = NYTimesAPI.searchNews(keyword
 							.getKey());
 					for (int i = 0; i < jsonArray.length(); i++) {
-						JSONObject jsonObject = jsonArray.getJSONObject(i);
+						JSONObject jsonObject = jsonArray.getJSONObject(i);						
 						News news = new News(jsonObject);
 						if (!favoriteNewsId.contains(news.getId())) {
 							allNews.add(new News(jsonObject));
@@ -76,9 +67,17 @@ public class RecommendNews extends HttpServlet {
 					}
 				}
 			}
-			RpcParser.parseOutput(response, new JSONArray(allNews));
+			RpcParser.writeOutput(response, new JSONArray(allNews));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 	}
 }

@@ -39,13 +39,13 @@ public class DBImport {
 
 			// Step 2: create tables
 			sql = "CREATE TABLE horizon_news "
-					+ "(id VARCHAR(255) NOT NULL, " 
+					+ "(news_id VARCHAR(255) NOT NULL, " 
 					+ "title VARCHAR(255), "
 					+ "url VARCHAR(255), "
 					+ "snippet VARCHAR(255), "
 					+ "image_url VARCHAR(1000), "
 					+ "keywords VARCHAR(255), "
-					+ "PRIMARY KEY ( id ))";
+					+ "PRIMARY KEY ( news_id ))";
 			System.out.println("\nDBImport executing query:\n" + sql);
 			stmt.executeUpdate(sql);
 
@@ -63,7 +63,7 @@ public class DBImport {
 					+ " news_id VARCHAR(255) NOT NULL, "
 					+ " last_visited_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 					+ " PRIMARY KEY (favorite_id),"
-					+ "FOREIGN KEY (news_id) REFERENCES horizon_news(id), "
+					+ "FOREIGN KEY (news_id) REFERENCES horizon_news(news_id), "
 					+ "FOREIGN KEY (user_id) REFERENCES horizon_user(user_id))";
 			System.out.println("\nDBImport executing query:\n" + sql);
 			stmt.executeUpdate(sql);

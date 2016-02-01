@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.json.JSONObject;
+
 import model.Keyword;
 import model.News;
 
@@ -53,6 +55,20 @@ public class DBConnection {
 		}
 	}
 	
+	private ResultSet executeFetchStatement(String query) {
+        if (conn == null) {
+            return null;
+        }
+        try {
+            Statement stmt = conn.createStatement();
+            System.out.println("\nDBConnection executing query:\n" + query);
+            return stmt.executeQuery(query);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+		return null;
+    }
+	
 	private Set<String> executeQueryStatement(String key, String inputKey, String outputKey, String tableName) {
 		Set<String> set = new HashSet<>();
 		try {
@@ -84,6 +100,29 @@ public class DBConnection {
 				+ Keyword.convertKeywordsToString(news.getKeywords()) + "\")";
 		executeUpdateStatement(sql);
 	}
+	
+	public JSONObject getNewsById(String newsId, boolean isFavorite) {
+		try {
+			String sql = "SELECT * from "
+					+ "restaurants where news_id='" + newsId + "'";
+			ResultSet rs = executeFetchStatement(sql);
+			if (rs.next()) {
+				News news = new News(
+						rs.getString("news_id"),
+						rs.getString("title"),
+						rs.getString("url"),
+						rs.getString("snippet"),
+						rs.getString("image_url"),
+						Keyword.convertStrToKeywords(rs.getString("keywords")));
+				JSONObject obj = news.toJSONObject();
+				obj.put("is_favorite", isFavorite);
+				return obj;
+			}
+		} catch (Exception e) { /* report an error */
+			System.out.println(e.getMessage());
+		}
+		return null;
+	}
 
 	public void setFavoriteNews(String userId, List<String> newsIds) {
 		String sql = "";
@@ -94,12 +133,19 @@ public class DBConnection {
 		}
 	}
 	
+	public void unsetFavoriteNews(String userId, List<String> newsIds) {
+		for (String newsId : newsIds) {
+			executeUpdateStatement("DELETE FROM horizon_favorite WHERE `user_id`=\""
+					+ userId + "\" and `news_id` = \"" + newsId + "\"");
+		}
+	}
+	
 	public Set<String> getFavoriteNewsId(String userId) {
 		return executeQueryStatement(userId, "user_id", "news_id", "horizon_favorite");
 	}
 	
 	private List<String> getKeywords(String newsId) {
-		Set<String> keywordSet = executeQueryStatement(newsId, "id",
+		Set<String> keywordSet = executeQueryStatement(newsId, "news_id",
 				"keywords", "horizon_news");
 		for (String keywords : keywordSet) {
 			return Keyword.convertStrToKeywords(keywords);
